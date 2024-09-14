@@ -1,68 +1,61 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QFormLayout, QDateEdit
-from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
 
-class AddCorporateInfoWindow(QWidget):
+
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('添加企业信息')
-        self.setGeometry(100, 100, 600, 400)
+        # 设置窗口标题和大小
+        self.setWindowTitle('功能模块示例')
+        self.setGeometry(100, 100, 400, 300)
 
-        # 创建各个组件
-        lbl_name = QLabel('公司名称:')
-        self.txt_name = QLineEdit()
-
-        lbl_major_work = QLabel('主要业务:')
-        self.txt_major_work = QLineEdit()
-
-        lbl_regist_address = QLabel('注册地址:')
-        self.txt_regist_address = QLineEdit()
-
-        lbl_regist_date = QLabel('注册日期:')
-        self.date_regist_date = QDateEdit()
-        self.date_regist_date.setDate(QDate.currentDate())
-
-        lbl_regist_money = QLabel('注册资金:')
-        self.txt_regist_money = QLineEdit()
-
-        lbl_co_number = QLabel('公司编号:')
-        self.txt_co_number = QLineEdit()
-
-        btn_submit = QPushButton('添加企业信息')
-        btn_submit.clicked.connect(self.submit_corporate_info)
-
-        # 创建布局
+        # 创建一个垂直布局
         layout = QVBoxLayout()
-        form_layout = QFormLayout()
 
-        form_layout.addRow(lbl_name, self.txt_name)
-        form_layout.addRow(lbl_major_work, self.txt_major_work)
-        form_layout.addRow(lbl_regist_address, self.txt_regist_address)
-        form_layout.addRow(lbl_regist_date, self.date_regist_date)
-        form_layout.addRow(lbl_regist_money, self.txt_regist_money)
-        form_layout.addRow(lbl_co_number, self.txt_co_number)
+        # 添加功能模块按钮
+        buttons = [
+            ('用户功能', self.userFunction),
+            ('用户管理', self.userManagement),
+            ('企业信息管理', self.enterpriseInfoManagement),
+            ('项目管理', self.projectManagement),
+            ('退出登录', self.quitApplication)
+        ]
 
-        layout.addLayout(form_layout)
-        layout.addWidget(btn_submit)
+        for text, slot in buttons:
+            button = QPushButton(text, self)
+            # 为按钮添加点击事件
+            button.clicked.connect(slot)
+            layout.addWidget(button)
 
+            # 将布局设置给窗口
         self.setLayout(layout)
 
-    def submit_corporate_info(self):
-        co_name = self.txt_name.text()
-        major_work = self.txt_major_work.text()
-        regist_address = self.txt_regist_address.text()
-        regist_date = self.date_regist_date.date().toString(Qt.ISODate)
-        regist_money = self.txt_regist_money.text()
-        co_number = self.txt_co_number.text()
+    def userFunction(self):
+        # 用户功能点击后的处理，这里仅打印信息
+        print("用户功能被点击")
 
-        # 在这里添加将数据提交到数据库的代码
-        print(f'提交企业信息：{co_name}, {major_work}, {regist_address}, {regist_date}, {regist_money}, {co_number}')
+    def userManagement(self):
+        # 用户管理点击后的处理
+        print("用户管理被点击")
+
+    def enterpriseInfoManagement(self):
+        # 企业信息管理点击后的处理
+        print("企业信息管理被点击")
+
+    def projectManagement(self):
+        # 项目管理点击后的处理
+        print("项目管理被点击")
+
+    def quitApplication(self):
+        # 退出登录按钮，关闭应用程序
+        sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = AddCorporateInfoWindow()
-    window.show()
+    ex = MainWindow()
+    ex.show()
     sys.exit(app.exec_())

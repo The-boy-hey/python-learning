@@ -337,7 +337,7 @@ class Ui_MainWindow(QMainWindow):
 
     def detail_mg_ac(self):
         self.hide()  # 主界面的隐藏
-        self.gtmc = detail_mg_ac.Ui_MainWindow()
+        self.gtmc = 企业信息.Ui_MainWindow()
         #注册界面打开
         self.gtmc.show()
 
@@ -376,7 +376,7 @@ class Ui_MainWindow(QMainWindow):
 
     def connect_sql_and_show(self,sql):
         # 连接数据库并获取企业信息
-        db = pymysql.connect(host='localhost', port=3306, user='root', passwd='root', database='financial_system',
+        db = pymysql.connect(host='localhost', port=3306, user='root', passwd='root', database='zhanghang',
                              charset='utf8')
         cur = db.cursor()
         cur.execute(sql)

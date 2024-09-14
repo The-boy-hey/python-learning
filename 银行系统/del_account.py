@@ -9,7 +9,7 @@ class CorporateModifyApp(QWidget):
         super().__init__()
 
         # 初始化数据库连接
-        self.db = pymysql.connect(host='localhost', port=3306, user='root', password='root', database='financial_system', charset='utf8')
+        self.db = pymysql.connect(host='localhost', port=3306, user='root', password='root', database='zhanghang', charset='utf8')
         self.cursor = self.db.cursor()
 
         self.initUI()

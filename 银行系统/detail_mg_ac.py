@@ -30,7 +30,7 @@ class Ui_MainWindow(QMainWindow):
         self.prepage = 1
         self.nextpage = 1
         self.count = 0
-        self.page_num = 5
+        self.page_num = 3
         self.setupUi(self)
         self.page_control()
         self.draw_libs_info()
@@ -393,7 +393,7 @@ class Ui_MainWindow(QMainWindow):
 
     def connect_sql_and_show(self,sql):
         # 连接数据库并获取书籍信息
-        db = pymysql.connect(host='localhost', port=3306, user='root', passwd='root', database='financial_system',
+        db = pymysql.connect(host='localhost', port=3306, user='root', passwd='root', database='zhanghang',
                              charset='utf8')
         cur = db.cursor()
         cur.execute(sql)

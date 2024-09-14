@@ -5,7 +5,9 @@ import pymysql
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 import 企业信息增加
 import 企业账号修改
-
+import 注注注测测测
+import 管理员主页面
+import 用户界面
 
 class Ui_MainWindow(QMainWindow):
     def __init__(self):
@@ -66,22 +68,35 @@ class Ui_MainWindow(QMainWindow):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 561, 26))
         self.menubar.setObjectName("menubar")
+
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.actionenter = QtWidgets.QAction(MainWindow)
         self.actionenter.setObjectName("actionenter")
+
         self.actionregister = QtWidgets.QAction(MainWindow)
         self.actionregister.setObjectName("actionregister")
+
         self.actionback = QtWidgets.QAction(MainWindow)
         self.actionback.setObjectName("actionback")
+
         self.menu.addAction(self.actionenter)
         self.menu.addAction(self.actionregister)
         self.menu.addAction(self.actionback)
+
         self.menubar.addAction(self.menu.menuAction())
+
+        self.pushButton.clicked.connect(self.login)
+        self.radioButton.toggled.connect(self.usertype)
+        self.radioButton_2.toggled.connect(self.usertype)
+        self.actionenter.triggered.connect(self.flush)
+        self.actionregister.triggered.connect(self.regist_user)
+        self.actionback.triggered.connect(self.quit_sys)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -95,12 +110,13 @@ class Ui_MainWindow(QMainWindow):
         self.label_2.setText(_translate("MainWindow", "密码:"))
         self.label_3.setText(_translate("MainWindow", "用户登录"))
         self.radioButton.setText(_translate("MainWindow", "管理员"))
-        self.radioButton_2.setText(_translate("MainWindow", "普通用户"))
+        self.radioButton_2.setText(_translate("MainWindow", "用户"))
         self.pushButton.setText(_translate("MainWindow", "登录"))
         self.menu.setTitle(_translate("MainWindow", "菜单栏"))
         self.actionenter.setText(_translate("MainWindow", "登录"))
         self.actionregister.setText(_translate("MainWindow", "注册"))
         self.actionback.setText(_translate("MainWindow", "退出"))
+
 
     def login(self):
         user = self.lineEdit.text()
@@ -108,6 +124,7 @@ class Ui_MainWindow(QMainWindow):
         print(user, pwd)
         self.usertype()
         print(self.ut)
+
         if user == "" or pwd == "":
             print(QMessageBox.warning(self, "警告", "用户名和密码不可为空!", QMessageBox.Yes, QMessageBox.Yes))
             return
@@ -122,24 +139,29 @@ class Ui_MainWindow(QMainWindow):
             self.db.rollback()
 
         if self.ut == 1:  # 管理员用户
-            sql = "select * from manager where user_name=%s and user_pwd=%s"
+            sql = "select * from users where user_name=%s and user_pwd=%s"
             cur = self.db.cursor()  # 获取游标
             cur.execute(sql, (user, pwd))  # 执行sql语句
             results = cur.fetchall()  # 通过fetchall获取数据
             print('results:', results)
+            self.hide()
+            self.libs=管理员主页面.Ui_MainWindow()
+            self.libs.show()
         else:  # 普通用户
-            sql = "select * from consumer where user_name=%s and user_pwd=%s"
-            cur = self.db.cursor()  # 获取游标
-            cur.execute(sql, (user, pwd))  # 执行sql语句
-            results = cur.fetchall()  # 通过fetchall获取数据
-            print('results:', results)
-
+            cursor = self.db.cursor()
+            query = "SELECT co_number FROM users WHERE user_name = %s AND user_pwd = %s"  # 准备查询语句
+            cursor.execute(query, (user, pwd))  # 执行查询，传入用户名和密码作为参数
+            result = cursor.fetchone()  # 获取查询结果的第一行数据
+            print('results:', result)
+            self.hide()
+            self.libs = 用户界面.Ui_MainWindow()
+            self.libs.show()
 
 
     def usertype(self):
         info = 0
         if self.radioButton.isChecked():           # 如果单选按钮1- 管理员被选择
-            self.radioButton_2.setChecked(True)          # 设置被选择
+            self.radioButton.setChecked(True)          # 设置被选择
             info = 1
         else:
             self.radioButton.setChecked(False)
@@ -154,9 +176,14 @@ class Ui_MainWindow(QMainWindow):
 
     def regist_user(self):
         self.hide()  # 主界面的隐藏
-        # self.regist = register.Ui_MainWindow()
-        #注册界面打开
+        self.regist =注注注测测测.Ui_MainWindow()
         self.regist.show()
+
+    def flush(self):
+        self.lineEdit.clear()
+        self.lineEdit_2.clear()
+        if self.ut == 0:
+            self.radioButton.setChecked(True)
     def quit_sys(self):
         self.close()
         sys.exit()

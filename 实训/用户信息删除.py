@@ -1,5 +1,6 @@
 import sys
 import pymysql
+import qdarkstyle
 from PyQt5 import QtWidgets
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -7,7 +8,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         super(Ui_MainWindow, self).__init__()
         self.setWindowTitle("账户删除界面")
         self.setGeometry(100, 100, 500, 250)
-
 
         self.db = pymysql.connect(
             host='localhost',
@@ -18,10 +18,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             charset='utf8'
         )
 
-
         self.init_ui()
 
         self.delete_button.clicked.connect(self.delete_account)
+        self.back_button.clicked.connect(self.go_back)
 
     def init_ui(self):
         self.label_ac_number = QtWidgets.QLabel("账户号码:", self)
@@ -37,7 +37,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.co_number_input.setGeometry(150, 80, 300, 30)
 
         self.delete_button = QtWidgets.QPushButton("删除账户", self)
-        self.delete_button.setGeometry(200, 130, 100, 30)
+        self.delete_button.setGeometry(100, 130, 100, 30)
+
+        self.back_button = QtWidgets.QPushButton("返回上一级", self)
+        self.back_button.setGeometry(300, 130, 100, 30)
 
     def delete_account(self):
         ac_number = self.ac_number_input.text()
@@ -65,6 +68,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         finally:
             cursor.close()
 
+    def go_back(self):
+        # 关闭当前窗口或实现其他返回逻辑
+        self.close()
+
     def closeEvent(self, event):
         self.db.close()
         event.accept()
@@ -72,5 +79,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = Ui_MainWindow()
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     window.show()
     sys.exit(app.exec_())

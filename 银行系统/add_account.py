@@ -182,7 +182,7 @@ class Ui_MainWindow(QMainWindow):
             print(QMessageBox.warning(self, "警告", "添加信息不可为空!", QMessageBox.Yes, QMessageBox.Yes))
             return
         try:
-            self.db = pymysql.connect(host='localhost', port=3306, user="root", password='root', database='corporation',
+            self.db = pymysql.connect(host='localhost', port=3306, user="root", password='root', database='zhanghang',
                                       charset='utf8')
         except:
             QMessageBox.warning(self, '警告', "连接数据库故障", QMessageBox.Yes)

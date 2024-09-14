@@ -1,12 +1,14 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
-import pymysql
 
-class CorporateModifyApp(QWidget):
+import qdarkstyle
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QWidget
+import pymysql
+import 企业信息
+
+class Ui_MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # 初始化数据库连接
         self.db = pymysql.connect(host='localhost', port=3306, user='root', password='root', database='zhanghang', charset='utf8')
         self.cursor = self.db.cursor()
 
@@ -21,6 +23,7 @@ class CorporateModifyApp(QWidget):
         self.lbl_regist_date = QLabel('注册日期 (YYYY-MM-DD):')
         self.lbl_regist_money = QLabel('注册资本:')
         self.lbl_co_number = QLabel('公司编号:')
+        self.lbl_lengalmen = QLabel('法人:')
 
         self.le_id = QLineEdit()
         self.le_name = QLineEdit()
@@ -29,13 +32,18 @@ class CorporateModifyApp(QWidget):
         self.le_regist_date = QLineEdit()
         self.le_regist_money = QLineEdit()
         self.le_co_number = QLineEdit()
+        self.le_lengalmen = QLineEdit()
 
         # 创建按钮
         self.btn_load = QPushButton('加载数据')
         self.btn_update = QPushButton('更新数据')
+        self.btn_return = QPushButton('返回')  # Return button
 
         # 布局管理
-        vbox = QVBoxLayout()
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+
+        vbox = QVBoxLayout(central_widget)
         hbox1 = QHBoxLayout()
         hbox2 = QHBoxLayout()
         hbox3 = QHBoxLayout()
@@ -43,6 +51,7 @@ class CorporateModifyApp(QWidget):
         hbox5 = QHBoxLayout()
         hbox6 = QHBoxLayout()
         hbox7 = QHBoxLayout()
+        hbox8 = QHBoxLayout()
 
         hbox1.addWidget(self.lbl_id)
         hbox1.addWidget(self.le_id)
@@ -66,6 +75,9 @@ class CorporateModifyApp(QWidget):
         hbox7.addWidget(self.lbl_co_number)
         hbox7.addWidget(self.le_co_number)
 
+        hbox8.addWidget(self.lbl_lengalmen)
+        hbox8.addWidget(self.le_lengalmen)
+
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
         vbox.addLayout(hbox3)
@@ -73,13 +85,14 @@ class CorporateModifyApp(QWidget):
         vbox.addLayout(hbox5)
         vbox.addLayout(hbox6)
         vbox.addLayout(hbox7)
+        vbox.addLayout(hbox8)
         vbox.addWidget(self.btn_update)
-
-        self.setLayout(vbox)
+        vbox.addWidget(self.btn_return)  # Add return button
 
         # 连接信号和槽
         self.btn_load.clicked.connect(self.load_data)
         self.btn_update.clicked.connect(self.update_data)
+        self.btn_return.clicked.connect(self.return_to_previous)  # Connect return button
 
         self.setWindowTitle('修改企业信息')
         self.show()
@@ -87,7 +100,7 @@ class CorporateModifyApp(QWidget):
     def load_data(self):
         co_id = self.le_id.text().strip()
         if co_id.isdigit():
-            sql = "SELECT co_name, major_work, regist_address, regist_date, regist_money, co_number FROM t_corporate WHERE co_id = %s"
+            sql = "SELECT co_name, major_work, regist_address, regist_date, regist_money, co_number, lengalmen FROM t_corporate WHERE co_id = %s"
             self.cursor.execute(sql, (co_id,))
             result = self.cursor.fetchone()
             if result:
@@ -97,6 +110,7 @@ class CorporateModifyApp(QWidget):
                 self.le_regist_date.setText(result[3].strftime('%Y-%m-%d') if result[3] else '')
                 self.le_regist_money.setText(str(result[4]) if result[4] else '')
                 self.le_co_number.setText(result[5])
+                self.le_lengalmen.setText(result[6])  # Load legal person's name
             else:
                 QMessageBox.warning(self, '错误', '未找到该公司ID的信息。')
         else:
@@ -110,11 +124,12 @@ class CorporateModifyApp(QWidget):
         regist_date = self.le_regist_date.text().strip()
         regist_money = self.le_regist_money.text().strip()
         co_number = self.le_co_number.text().strip()
+        lengalmen = self.le_lengalmen.text().strip()  # Get legal person's name
 
         if co_id.isdigit():
-            sql = "UPDATE t_corporate SET co_name = %s, major_work = %s, regist_address = %s, regist_date = %s, regist_money = %s, co_number = %s WHERE co_id = %s"
+            sql = "UPDATE t_corporate SET co_name = %s, major_work = %s, regist_address = %s, regist_date = %s, regist_money = %s, co_number = %s, lengalmen = %s WHERE co_id = %s"
             try:
-                self.cursor.execute(sql, (co_name, major_work, regist_address, regist_date, regist_money, co_number, co_id))
+                self.cursor.execute(sql, (co_name, major_work, regist_address, regist_date, regist_money, co_number, lengalmen, co_id))
                 self.db.commit()
                 QMessageBox.information(self, '成功', '企业信息已更新。')
             except Exception as e:
@@ -123,10 +138,17 @@ class CorporateModifyApp(QWidget):
         else:
             QMessageBox.warning(self, '错误', '请先加载一个有效的公司ID。')
 
+    def return_to_previous(self):
+        QMessageBox.information(self, '返回', '返回到上一个界面。')
+        self.hide()  # Or any other logic you want to implement
+        self.addac = 企业信息.Ui_MainWindow()
+        self.addac.show()
+
     def closeEvent(self, event):
         self.db.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = CorporateModifyApp()
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    ex = Ui_MainWindow()
     sys.exit(app.exec_())

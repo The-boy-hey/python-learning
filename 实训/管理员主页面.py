@@ -18,6 +18,12 @@ import 企业信息增加
 import 企业账号修改
 import 注注注测测测
 import 企业信息
+import 用户信息添加
+import 用户信息删除
+import 用户信息修改
+
+
+
 class Ui_MainWindow(QMainWindow):
     #该类的构造方法
     def __init__(self):
@@ -261,7 +267,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "账户管理系统"))
         self.pushButton1.setText(_translate("MainWindow", "添加账户"))
         self.pushButton2.setText(_translate("MainWindow", "删除账户"))
-        self.pushButton3.setText(_translate("MainWindow", "账户管理"))
+        self.pushButton3.setText(_translate("MainWindow", "修改账户"))
         self.pushButton8.setText(_translate("MainWindow", "查询"))
         self.comboBox.setItemText(0, _translate("MainWindow", "按用户id查询"))
         self.comboBox.setItemText(1, _translate("MainWindow", "按用户账号查询"))
@@ -326,7 +332,7 @@ class Ui_MainWindow(QMainWindow):
     def regist_user(self):
         self.hide()
         # 注册界面打开
-        self.log =企业信息.CorporateInfoApp()
+        self.log =企业信息.Ui_MainWindow()
         self.log.show()
 
     def quit_sys(self):
@@ -335,17 +341,18 @@ class Ui_MainWindow(QMainWindow):
 
     # 添加书籍
     def show_lib(self):
-        self.add = 企业信息增加.添加企业信息窗口()
+        self.add = 用户信息添加.Ui_MainWindow()
         self.add.show()
 
     # 淘汰书籍
     def del_lib(self):
-        self.del_b = 企业信息增加.添加企业信息窗口()
+        self.del_b = 用户信息删除.Ui_MainWindow()
         self.del_b.show()
+
 
     # 用户管理
     def user_manage(self):
-        self.mag = 企业信息增加.添加企业信息窗口()
+        self.mag = 用户信息修改.Ui_MainWindow()
         self.mag.show()
 
     def flush(self):#刷新
